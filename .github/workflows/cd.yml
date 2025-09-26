@@ -6,7 +6,10 @@ on:
 
 jobs:
   Deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest          
+    env:
+      DATABASE_URL: ${{ DATABASE_URL.DATABASE_URL }}
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -32,6 +35,12 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: 'gcloud builds submit --tag us-central1-docker.pkg.dev/summer-marker-473217-n1/notely-ar-repo/notely:latest'
+
+      - name: 'Install goose'
+        run: 'go install github.com/pressly/goose/v3/cmd/goose@latest'
+
+      - name: "Run migrations"
+        run: './scripts/migrate.sh'
 
       - name: 'Deploy to Cloud Run'
         run: 'gcloud run deploy notely --image us-central1-docker.pkg.dev/summer-marker-473217-n1/notely-ar-repo/notely:latest --region us-central1 --project summer-marker-473217-n1 --allow-unauthenticated --max-instances=4'
