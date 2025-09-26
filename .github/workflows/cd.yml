@@ -29,9 +29,11 @@ jobs:
 
       - name: 'Set GCP Project'
         run: 'gcloud config set project summer-marker-473217-n1'
-        
+
       - name: 'Use gcloud CLI'
         run: 'gcloud builds submit --tag us-central1-docker.pkg.dev/summer-marker-473217-n1/notely-ar-repo/notely:latest'
 
+      - name: 'Deploy to Cloud Run'
+        run: 'gcloud run deploy notely --image us-central1-docker.pkg.dev/summer-marker-473217-n1/notely-ar-repo/notely:latest --region us-central1 --project summer-marker-473217-n1 --allow-unauthenticated --max-instances=4'
 
       
